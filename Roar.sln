@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roar.Api", "Roar.Api\Roar.Api.csproj", "{F64B22E4-FE87-42FB-9413-62D1E021C437}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roar.Contract", "Roar.Contract\Roar.Contract.csproj", "{CADDC138-5BCD-4F1D-9D7F-367C4C8CDB15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F64B22E4-FE87-42FB-9413-62D1E021C437}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F64B22E4-FE87-42FB-9413-62D1E021C437}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F64B22E4-FE87-42FB-9413-62D1E021C437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADDC138-5BCD-4F1D-9D7F-367C4C8CDB15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADDC138-5BCD-4F1D-9D7F-367C4C8CDB15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADDC138-5BCD-4F1D-9D7F-367C4C8CDB15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADDC138-5BCD-4F1D-9D7F-367C4C8CDB15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

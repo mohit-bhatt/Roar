@@ -17,9 +17,20 @@ namespace Roar.Api.Controllers.Api
             if (enrollmentModel.UserDetails == null)
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "User details not supplied");
 
-            var result = voiceItWrapper.createEnrollmentByByteData(enrollmentModel.UserDetails.UserId,
-                                                                   enrollmentModel.UserDetails.Password, enrollmentModel.VoiceData,
-                                                                   enrollmentModel.ContentLanguage);
+            string result = string.Empty;
+
+            if (!string.IsNullOrEmpty(enrollmentModel.VoiceDataUrl))
+            {
+                result = voiceItWrapper.createEnrollmentByWavURL(enrollmentModel.UserDetails.UserId,
+                                                       enrollmentModel.UserDetails.Password, enrollmentModel.VoiceDataUrl,
+                                                       enrollmentModel.ContentLanguage);
+            }
+            else
+            {
+                result = voiceItWrapper.createEnrollmentByByteData(enrollmentModel.UserDetails.UserId,
+                                                                       enrollmentModel.UserDetails.Password, enrollmentModel.VoiceData,
+                                                                       enrollmentModel.ContentLanguage);
+            }
             
             if (string.IsNullOrEmpty(result))
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "The server did not respond back with a result");
