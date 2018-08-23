@@ -14,7 +14,6 @@ namespace Roar.Api.Models
         public string ContentLanguage { get; set; } = "en-US";
         public string EnrollmentId { get; set; }
         public string VoiceDataUrl { get; set; }
-
         public long EmployeeUid { get; set; }
     }
 }
