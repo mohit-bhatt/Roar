@@ -15,5 +15,6 @@ namespace Roar.Api.Models
         public string EnrollmentId { get; set; }
         public string VoiceDataUrl { get; set; }
         public long EmployeeUid { get; set; }
+        public int ClientId { get; set; }
     }
 }
