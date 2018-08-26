@@ -19,18 +19,6 @@ namespace Roar.Api.Manager
             return fileBlob.Uri.ToString();
         }
 
-        public string SaveUserVoiceData(EnrollmentModel item)
-        {
-            AzureStorageContext azureStorageContext = new AzureStorageContext();
-            DocumentClient client = azureStorageContext.GetCosmosDocumentClient();
-            string cosmosCollectionId = azureStorageContext.GetCosmosCollectionId();
-            //client.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, cosmosCollectionId));
-            //client.CreateDocumentAsync(cosmosCollectionId, item);
-            var result = client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("roardb", cosmosCollectionId), item);
-            return "ok";
-            
-        }
-
         private CloudBlobContainer getContainerRefernce()
         {
             AzureStorageContext azureStorageContext = new AzureStorageContext();
@@ -38,6 +26,15 @@ namespace Roar.Api.Manager
             CloudBlobClient blobClient = azureStorageContext.GetCloudBlobClient();
             CloudBlobContainer container = blobClient.GetContainerReference("roaraudio");            
             return container;
+        }
+
+        public string SaveUserVoiceData(EnrollmentModel item)
+        {
+            AzureCosmosContext azureCosmosContext = new AzureCosmosContext();
+            DocumentClient client = azureCosmosContext.GetCosmosDocumentClient();
+            string cosmosCollectionId = azureCosmosContext.GetCosmosCollectionId();
+            var result = client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("roardb", cosmosCollectionId), item).Result;
+            return result.ActivityId;
         }
     }
 }
