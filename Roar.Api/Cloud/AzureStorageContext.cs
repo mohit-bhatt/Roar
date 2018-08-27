@@ -1,5 +1,7 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.Azure.Documents.Client;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System;
 using System.Configuration;
 
 namespace Roar.Api.Cloud
@@ -13,12 +15,12 @@ namespace Roar.Api.Cloud
     {
         private CloudStorageAccount _cloudStorageAccount;
         private CloudBlobClient _cloudBlobClient;
+        
 
         public AzureStorageContext()
         {
             _cloudStorageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["roartable_AzureStorageConnectionString"]);
             _cloudBlobClient = _cloudStorageAccount.CreateCloudBlobClient();
-
         }
         public CloudStorageAccount GetCloudStorageAccount()
         {
@@ -29,5 +31,6 @@ namespace Roar.Api.Cloud
         {
             return _cloudBlobClient;
         }
+        
     }
 }
