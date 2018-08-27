@@ -18,7 +18,11 @@ namespace Roar.Api.Controllers.Api.v1
         [Route("Create")]
         [HttpPost]
         public HttpResponseMessage SaveVoiceData(byte[] voiceData)
-        {            
+        {
+            if (voiceData.Length <= 0)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No Voice data found");
+            }
             try
             {
                 var fileName = "Test_" + DateTime.Now.Ticks.ToString() + ".wav";
