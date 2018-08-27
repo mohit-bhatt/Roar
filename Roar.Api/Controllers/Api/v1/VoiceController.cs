@@ -1,5 +1,6 @@
 ﻿using Roar.Api.Manager;
 using Roar.Api.Models;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -16,10 +17,11 @@ namespace Roar.Api.Controllers.Api.v1
         /// <returns></returns>
         [Route("Create")]
         [HttpPost]
-        public HttpResponseMessage SaveVoiceData(byte[] voiceData, string fileName)
+        public HttpResponseMessage SaveVoiceData(byte[] voiceData)
         {            
             try
             {
+                var fileName = "Test_" + DateTime.Now.Ticks.ToString() + ".wav";
                 UserVoiceManager manager = new UserVoiceManager();
                 string result = string.Empty;
                 result = manager.SaveVoiceData(voiceData, fileName);
