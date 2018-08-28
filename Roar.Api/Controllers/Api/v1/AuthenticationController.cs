@@ -12,17 +12,13 @@ namespace Roar.Api.Controllers.Api
     public class AuthenticationController : ApiController
     {
         [HttpPost]
-        [Route("authandparse")]
-        public HttpResponseMessage AuthenticateAndParse(EnrollmentModel enrollmentModel)
+        [Route("authandparse/{userid}/{pw}")]
+        public HttpResponseMessage AuthenticateAndParse(string userId, string pw, byte[] voiceData)
         {
-            if((enrollmentModel == null) || (enrollmentModel.UserDetails == null))
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Invalid enrollment model provided");
-            }
 
             VoiceItWrapper wrapper = new VoiceItWrapper();
 
-            var result = wrapper.authenticationByWavURL(enrollmentModel.UserDetails.UserId, enrollmentModel.UserDetails.Password, enrollmentModel.VoiceDataUrl);
+            var result = wrapper.authenticationByByteData(userId, pw, voiceData);
 
             if (string.IsNullOrEmpty(result))
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "The voice auth server did not respond back with a result");

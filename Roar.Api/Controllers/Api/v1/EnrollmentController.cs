@@ -36,7 +36,7 @@ namespace Roar.Api.Controllers.Api
             if(enrollmentResponse.Result.ToLower().Contains("Success"))
             {
                 var userVoiceManager = new UserVoiceManager();
-                userVoiceManager.SaveUserVoiceData(new EnrollmentModel { ClientId = clientId, EnrollmentId = enrollmentResponse.EnrollmentID, EmployeeUid = employeeUid});
+                userVoiceManager.SaveUserVoiceData(new EmployeeEnrollment { ClientId = clientId, EnrollmentId = enrollmentResponse.EnrollmentID, EmployeeUid = employeeUid});
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, enrollmentResponse);
