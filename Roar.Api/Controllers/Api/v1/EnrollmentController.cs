@@ -1,4 +1,7 @@
-﻿using Roar.Api.Models;
+﻿using Newtonsoft.Json;
+using Roar.Api.Manager;
+using Roar.Api.Models;
+using Roar.Api.Models.ApiResponse;
 using Roar.Api.Utility;
 using System.Net;
 using System.Net.Http;
@@ -9,34 +12,34 @@ namespace Roar.Api.Controllers.Api
     [RoutePrefix("api/v1/Enrollment")]
     public class EnrollmentController : ApiController
     {
-        [Route("Create")]
+        [Route("Create/{userId}/{pw}/{clientId}/{employeeUid}")]
         [HttpPost]
-        public HttpResponseMessage CreateEnrollment(EnrollmentModel enrollmentModel)
+        public HttpResponseMessage CreateEnrollment(string userId, string pw, int clientId, long employeeUid, [FromBody] byte[] voiceData)
         {
             var voiceItWrapper = new VoiceItWrapper();
-            if (enrollmentModel.UserDetails == null)
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "User details not supplied");
 
             string result = string.Empty;
 
-            if (!string.IsNullOrEmpty(enrollmentModel.VoiceDataUrl))
-            {
-                result = voiceItWrapper.createEnrollmentByWavURL(enrollmentModel.UserDetails.UserId,
-                                                       enrollmentModel.UserDetails.Password, enrollmentModel.VoiceDataUrl,
-                                                       enrollmentModel.ContentLanguage);
-            }
-            else
-            {
-                result = voiceItWrapper.createEnrollmentByByteData(enrollmentModel.UserDetails.UserId,
-                                                                       enrollmentModel.UserDetails.Password, enrollmentModel.VoiceData,
-                                                                       enrollmentModel.ContentLanguage);
-            }
+            result = voiceItWrapper.createEnrollmentByByteData(userId,
+                                                                    pw, voiceData);
             
             if (string.IsNullOrEmpty(result))
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "The server did not respond back with a result");
 
+            var enrollmentResponse = JsonConvert.DeserializeObject<EnrollmentResponse>(result);
 
-            return Request.CreateResponse(HttpStatusCode.OK, result);
+            if (enrollmentResponse == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Error while deserializing response from voice auth server");
+            }
+
+            if(enrollmentResponse.Result.ToLower().Contains("Success"))
+            {
+                var userVoiceManager = new UserVoiceManager();
+                userVoiceManager.SaveUserVoiceData(new EnrollmentModel { ClientId = clientId, EnrollmentId = enrollmentResponse.EnrollmentID, EmployeeUid = employeeUid});
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, enrollmentResponse);
         }
 
         [Route("Delete")]
