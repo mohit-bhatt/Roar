@@ -222,6 +222,7 @@
     <Compile Include="Manager\IUserVoiceManager.cs" />
     <Compile Include="Manager\UserVoiceManager.cs" />
     <Compile Include="Models\AuthenticationModel.cs" />
+    <Compile Include="Models\BinaryMediaTypeFormatter.cs" />
     <Compile Include="Models\EnrollmentModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

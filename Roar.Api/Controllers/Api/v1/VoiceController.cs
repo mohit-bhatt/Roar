@@ -12,7 +12,7 @@ namespace Roar.Api.Controllers.Api.v1
     public class VoiceController : ApiController
     {
         /// <summary>
-        /// API to save voice data to Azure Blob asn return url
+        /// API to save voice data to Azure Blob 
         /// </summary>
         /// <returns></returns>
         [Route("Create")]
