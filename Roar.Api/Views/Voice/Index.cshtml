@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<head>
+    <!-- Important to load artyom in the head tag, this give time to load all the voices in the browser -->
+    <script src="~/Scripts/artyom.window.min.js"></script>
+    <script>
+        // Create a global accesible instance of artyom
+        window.artyom = new Artyom();
+    </script>
+</head>
+<h2>Voice</h2>
+<script>    
+        artyom.addCommands({
+            indexes: ["Punch in", "Punch out"],
+            action: function (i) {
+                // i = index of the recognized option
+                switch (i) {
+                    case 0:
+                        alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you IN");
+                        break;
+                    case 1:
+                        alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you OUT");
+                        break;
+                }
+                
+            }
+        });
+
+        artyom.initialize({
+            lang: "en-GB",// More languages are documented in the library
+            continuous: true,//if you have https connection, you can activate continuous mode
+            debug: true,//Show everything in the console
+            listen: true // Start listening when this function is triggered
+        });
+   
+    
+</script>
+
