@@ -11,5 +11,6 @@ namespace Roar.Api.Manager
     {
         string SaveVoiceData(byte[] voicedata, string fileName);
         string SaveUserVoiceData(EmployeeEnrollment employeeEnrollment);
+        EmployeeEnrollment GetEmployeeEnrollment(string enrollmentId);
     }
 }

@@ -35,5 +35,16 @@ namespace Roar.Api.Manager
             var result = client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("roardb", cosmosCollectionId), employeeEnrollment).Result;
             return result.ActivityId;
         }
+
+        public EmployeeEnrollment GetEmployeeEnrollment(string enrollmentId)
+        {
+            AzureCosmosContext azureCosmosContext = new AzureCosmosContext();
+            DocumentClient client = azureCosmosContext.GetCosmosDocumentClient();
+            string cosmosCollectionId = azureCosmosContext.GetCosmosCollectionId();
+            var documentUri = UriFactory.CreateDocumentUri("roardb", cosmosCollectionId, enrollmentId);
+            var document = client.ReadDocumentAsync(documentUri).Result;
+
+            return (EmployeeEnrollment)((dynamic)(document.Resource));
+        }
     }
 }

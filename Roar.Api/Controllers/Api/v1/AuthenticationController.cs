@@ -1,10 +1,12 @@
-﻿using Roar.Api.Models;
+﻿using System;
+using Roar.Api.Models;
 using Roar.Api.Utility;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Roar.Api.Models.ApiResponse;
+using Roar.Api.Manager;
 
 namespace Roar.Api.Controllers.Api
 {
@@ -51,16 +53,19 @@ namespace Roar.Api.Controllers.Api
                 if(command.ToLower().Contains("punch in"))
                 {
                     DoPunchIn(authResponse.EnrollmentID);
+                    result = true;
                 }
 
                 if (command.ToLower().Contains("punch out"))
                 {
                     DoPunchOut(authResponse.EnrollmentID);
+                    result = true;
                 }
 
                 if (command.ToLower().Contains("authenticate"))
                 {
                     DoAuthenticate(authResponse.EnrollmentID);
+                    result = true;
                 }
             }
 
@@ -69,6 +74,34 @@ namespace Roar.Api.Controllers.Api
 
         private void DoPunchIn(string enrollmentId)
         {
+            PunchManager punchManager = new PunchManager();
+            UserVoiceManager mgr = new UserVoiceManager();
+
+            EmployeeEnrollment enrollment = mgr.GetEmployeeEnrollment(enrollmentId);
+
+            if (enrollment != null)
+            {
+                Punch p = new Punch
+                {
+                    ClientId = enrollment.ClientId,
+                    EmployeeUid = enrollment.EmployeeUid,
+                    DepartmentUid = enrollment.DepartmentUid,
+                    PunchDateTime = DateTime.Now,
+                    PunchSourceTypeId = (byte)1, //manual
+                    PunchActivityTypeId = (byte)1, //work
+                    PunchStatusTypeId = (byte)1, //auto
+                    IsActive = true,
+                    CanBeProcessed = true,
+                    UserKey = Guid.Parse("C00E2729-9FFA-E511-8893-005056BD7869")
+                };
+
+                punchManager.InsertPunch(p);
+            }
+            else
+            {
+                throw new Exception("Enrollment record could not be read from cosmosdb");
+            }
+
 
         }
 

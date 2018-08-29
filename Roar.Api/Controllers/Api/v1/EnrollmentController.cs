@@ -12,9 +12,9 @@ namespace Roar.Api.Controllers.Api
     [RoutePrefix("api/v1/Enrollment")]
     public class EnrollmentController : ApiController
     {
-        [Route("Create/{userId}/{pw}/{clientId}/{employeeUid}")]
+        [Route("Create/{userId}/{pw}/{clientId}/{employeeUid}/{departmentUid}")]
         [HttpPost]
-        public HttpResponseMessage CreateEnrollment(string userId, string pw, int clientId, long employeeUid, [FromBody] byte[] voiceData)
+        public HttpResponseMessage CreateEnrollment(string userId, string pw, int clientId, long employeeUid, long departmentUid, [FromBody] byte[] voiceData)
         {
             var voiceItWrapper = new VoiceItWrapper();
 
@@ -38,7 +38,7 @@ namespace Roar.Api.Controllers.Api
             if (enrollmentResponseCode == Constants.EnrollmentSuccessResponseCode)
             {
                 var userVoiceManager = new UserVoiceManager();
-                userVoiceManager.SaveUserVoiceData(new EmployeeEnrollment { ClientId = clientId, EnrollmentId = enrollmentResponse.EnrollmentID, EmployeeUid = employeeUid });
+                userVoiceManager.SaveUserVoiceData(new EmployeeEnrollment { ClientId = clientId, EnrollmentId = enrollmentResponse.EnrollmentID, EmployeeUid = employeeUid, DepartmentUid = departmentUid });
                 return Request.CreateResponse(HttpStatusCode.OK, enrollmentResponse);
             }
             else if (Constants.EnrollmentErrorResponseCodes.ContainsKey(enrollmentResponseCode))
