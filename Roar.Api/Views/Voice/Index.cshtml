@@ -3,50 +3,86 @@
 }
 <head>
     <!-- Important to load artyom in the head tag, this give time to load all the voices in the browser -->
-    <script src="~/Scripts/artyom.window.min.js"></script>
-    <script>
-        // Create a global accesible instance of artyom
-        window.artyom = new Artyom();
-        if (navigator.mediaDevices.getUserMedia) {
-            var self = this;
-            var constraints = { audio: true };
-            chunks = [];
-            badgeNumber = null;
-            navigator.mediaDevices.getUserMedia(constraints).then(
-                function (stream) {
-                    var options = {
-                        mimeType: 'audio/webm'
-                    }
-                    mediaRecorder = new MediaRecorder(stream, options);
-                    mediaRecorder.onstop = function (e) {
-                        blob = new Blob(chunks, { type: 'audio/wav' });
-                        chunks = [];
-                        console.log(window.URL.createObjectURL(blob));
-                    }
-                    mediaRecorder.ondataavailable = function (e) {
-                        chunks.push(e.data);
-                    }
-                }, function (err) {
-                    console.log('The following error occured: ' + err);
-                });
-        }
-    </script>
+    <script src="~/Scripts/artyom.window.min.js"></script>    
 </head>
 <div style="background-color:#cccccc;min-height:56px">
     <h1>
-
         <img src="~/Images/paycor-logo.png" />
     </h1>
 </div>
 <div style="height:3px;width:100%;background-image:linear-gradient(to right,#f47321,#eaeaea)"></div>
 <h2 style="padding-bottom:40px">Welcome to Paycor Voice Command Application </h2>
-<div>
-    <label style="font-size:20px;font-weight:inherit; padding-right:20px">Please say your command </label>
-    <textarea id="commandtext" style="height:100px;width:5000px;font-style:italic">Hey Paycor i want to punch in right now</textarea>
-</div>
-<img src="~/Images/animated-sound-waves.gif" style="width:100%; padding-top:50px" /> "
+<canvas class="visualizer" height="60px" width="746"></canvas>
 <script>
+    // Create a global accesible instance of artyom
+    window.artyom = new Artyom();
+    if (navigator.mediaDevices.getUserMedia) {
+        var self = this;
+        var constraints = { audio: true };
+        chunks = [];
+        badgeNumber = null;
+        var canvas = document.querySelector('.visualizer');
+        // visualiser setup - create web audio api context and canvas
+        var audioCtx = new (window.AudioContext || webkitAudioContext)();
+        var canvasCtx = canvas.getContext("2d");
 
+        navigator.mediaDevices.getUserMedia(constraints).then(
+            function (stream) {
+                var options = {
+                    mimeType: 'audio/webm'
+                }
+                mediaRecorder = new MediaRecorder(stream, options);
+                mediaRecorder.onstop = function (e) {
+                    blob = new Blob(chunks, { type: 'audio/wav' });
+                    chunks = [];
+                    console.log(window.URL.createObjectURL(blob));
+                }
+                mediaRecorder.ondataavailable = function (e) {
+                    chunks.push(e.data);
+                }
+                visualize(stream)
+                function visualize(stream) {
+                    var source = audioCtx.createMediaStreamSource(stream);
+                    var analyser = audioCtx.createAnalyser();
+                    analyser.fftSize = 2048;
+                    var bufferLength = analyser.frequencyBinCount;
+                    var dataArray = new Uint8Array(bufferLength);
+                    source.connect(analyser);
+                    //analyser.connect(audioCtx.destination);
+                    draw()
+
+                    function draw() {
+                        WIDTH = canvas.width
+                        HEIGHT = canvas.height;
+                        requestAnimationFrame(draw);
+                        analyser.getByteTimeDomainData(dataArray);
+                        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+                        canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+                        canvasCtx.lineWidth = 2;
+                        canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+                        canvasCtx.beginPath();
+                        var sliceWidth = WIDTH * 1.0 / bufferLength;
+                        var x = 0;
+                        for (var i = 0; i < bufferLength; i++) {
+                            var v = dataArray[i] / 128.0;
+                            var y = v * HEIGHT / 2;
+                            if (i === 0) {
+                                canvasCtx.moveTo(x, y);
+                            } else {
+                                canvasCtx.lineTo(x, y);
+                            }
+                            x += sliceWidth;
+                        }
+                        canvasCtx.lineTo(canvas.width, canvas.height / 2);
+                        canvasCtx.stroke();
+                    }
+                }                
+            }, function (err) {
+                console.log('The following error occured: ' + err);
+            });
+    }
+</script>
+<script>
         artyom.addCommands({
             //The smart property of the command needs to be true
             smart: true,
@@ -61,12 +97,17 @@
             }
         });
         artyom.addCommands({
-            indexes: ["right now"],
+            indexes: ["right now", " right now ", "now"],
             action: function (i) {
                 if (mediaRecorder.state === "recording" || mediaRecorder.state === "paused") {
                     mediaRecorder.stop();
                     console.log("Recording Ends");
-                    alert("Badge Number:" + badgeNumber)
+                    console.log(badgeNumber);
+                    badgeNumber.trim().replace(/' '/g, '').replace(/[a-z]/g, '');
+                    console.log(badgeNumber);
+                    var number = badgeNumber.split(' ').join('');
+                    console.log(number);
+                    alert("Badge Number:" + number)
                 }
             }
         });
