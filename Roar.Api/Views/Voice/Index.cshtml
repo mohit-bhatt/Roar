@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 <head>
@@ -8,6 +7,29 @@
     <script>
         // Create a global accesible instance of artyom
         window.artyom = new Artyom();
+        if (navigator.mediaDevices.getUserMedia) {
+            var self = this;
+            var constraints = { audio: true };
+            chunks = [];
+            badgeNumber = null;
+            navigator.mediaDevices.getUserMedia(constraints).then(
+                function (stream) {
+                    var options = {
+                        mimeType: 'audio/webm'
+                    }
+                    mediaRecorder = new MediaRecorder(stream, options);
+                    mediaRecorder.onstop = function (e) {
+                        blob = new Blob(chunks, { type: 'audio/wav' });
+                        chunks = [];
+                        console.log(window.URL.createObjectURL(blob));
+                    }
+                    mediaRecorder.ondataavailable = function (e) {
+                        chunks.push(e.data);
+                    }
+                }, function (err) {
+                    console.log('The following error occured: ' + err);
+                });
+        }
     </script>
 </head>
 <div style="background-color:#cccccc;min-height:56px">
@@ -24,27 +46,38 @@
 </div>
 <img src="~/Images/animated-sound-waves.gif" style="width:100%; padding-top:50px" /> "
 <script>
-    artyom.addCommands({
-        indexes: ["Punch in", "Punch out"],
-        action: function (i) {            // i = index of the recognized option
-            switch (i) {
-                case 0:
-                    alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you IN");
-                    break;
-                case 1:
-                    alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you OUT");
-                    break;
+
+        artyom.addCommands({
+            //The smart property of the command needs to be true
+            smart: true,
+            indexes: ["number *","badge number *", "badgenumber *", "badge *", "badg number *", "badgnumber *", "badg *", "baj number *", "bajnumber *", "baj *"],
+            action: function (i, wildcard) {
+                // Speak alterable value
+                badgeNumber = wildcard;
+                if (mediaRecorder.state !== "recording") {
+                    mediaRecorder.start();
+                    console.log("Recording Starts");
+                }
             }
+        });
+        artyom.addCommands({
+            indexes: ["right now"],
+            action: function (i) {
+                if (mediaRecorder.state === "recording" || mediaRecorder.state === "paused") {
+                    mediaRecorder.stop();
+                    console.log("Recording Ends");
+                    alert("Badge Number:" + badgeNumber)
+                }
+            }
+        });
 
-        }
-    });
+        artyom.initialize({
+            lang: "en-GB",// More languages are documented in the library
+            continuous: true,//if you have https connection, you can activate continuous mode
+            debug: true,//Show everything in the console
+            listen: true // Start listening when this function is triggered
+        });
 
-    artyom.initialize({
-        lang: "en-GB",// More languages are documented in the library
-        continuous: true,//if you have https connection, you can activate continuous mode
-        debug: true,//Show everything in the console
-        listen: true // Start listening when this function is triggered
-    });
 
 </script>
 

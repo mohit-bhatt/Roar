@@ -5,6 +5,7 @@ using Roar.Api.Models.ApiResponse;
 using Roar.Api.Utility;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace Roar.Api.Controllers.Api
