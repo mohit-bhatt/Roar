@@ -1,5 +1,6 @@
 ﻿using Roar.Api.Manager;
 using Roar.Api.Models;
+using Roar.Api.Utility;
 using System;
 using System.IO;
 using System.Net;
@@ -17,8 +18,11 @@ namespace Roar.Api.Controllers.Api.v1
         /// <returns></returns>
         [Route("Create")]
         [HttpPost]
-        public HttpResponseMessage SaveVoiceData(byte[] voiceData)
+        public HttpResponseMessage SaveVoiceData([FromBody]byte[] voiceData)
         {
+            //var wrapper = new VoiceItWrapper();
+            //var result1 = wrapper.createEnrollmentByByteData("mohit", "mohit", voiceData);
+            //byte[] voiceData = System.Text.Encoding.UTF8.GetBytes(voiceDataString);
             if (voiceData.Length <= 0)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "No Voice data found");
