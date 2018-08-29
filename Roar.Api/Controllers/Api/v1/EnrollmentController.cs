@@ -17,8 +17,6 @@ namespace Roar.Api.Controllers.Api
         [HttpPost]
         public HttpResponseMessage CreateEnrollment(string userId, string pw, int clientId, long employeeUid, [FromBody] byte[] voiceData)
         {
-            userId = "mohit";
-            pw = "mohit";
             var voiceItWrapper = new VoiceItWrapper();
 
             string result = string.Empty;
