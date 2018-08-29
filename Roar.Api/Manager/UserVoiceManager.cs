@@ -4,6 +4,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Roar.Api.Cloud;
 using Roar.Api.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 namespace Roar.Api.Manager
 {
@@ -38,13 +39,16 @@ namespace Roar.Api.Manager
 
         public EmployeeEnrollment GetEmployeeEnrollment(string enrollmentId)
         {
+            FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
             AzureCosmosContext azureCosmosContext = new AzureCosmosContext();
             DocumentClient client = azureCosmosContext.GetCosmosDocumentClient();
             string cosmosCollectionId = azureCosmosContext.GetCosmosCollectionId();
-            var documentUri = UriFactory.CreateDocumentUri("roardb", cosmosCollectionId, enrollmentId);
-            var document = client.ReadDocumentAsync(documentUri).Result;
 
-            return (EmployeeEnrollment)((dynamic)(document.Resource));
+            List<EmployeeEnrollment> familyQuery = client.CreateDocumentQuery<EmployeeEnrollment>(
+                UriFactory.CreateDocumentCollectionUri("roardb", cosmosCollectionId), queryOptions)
+                .Where(f => f.EnrollmentId == enrollmentId).ToList();
+
+            return familyQuery.FirstOrDefault();
         }
     }
 }

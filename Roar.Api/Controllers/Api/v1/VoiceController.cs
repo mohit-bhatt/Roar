@@ -60,5 +60,21 @@ namespace Roar.Api.Controllers.Api.v1
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        [Route("UserVoiceGet")]
+        [HttpGet]
+        public HttpResponseMessage GetEmployeeByEnrollmentId(string enrollmentId)
+        {
+            try
+            {
+                UserVoiceManager manager = new UserVoiceManager();
+                var result = manager.GetEmployeeEnrollment(enrollmentId);
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (System.Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }
