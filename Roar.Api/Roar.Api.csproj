@@ -222,6 +222,8 @@
     <Compile Include="Manager\IUserVoiceManager.cs" />
     <Compile Include="Manager\PunchManager.cs" />
     <Compile Include="Manager\UserVoiceManager.cs" />
+    <Compile Include="Models\ApiResponse\AuthResponse.cs" />
+    <Compile Include="Models\ApiResponse\EnrollmentResponse.cs" />
     <Compile Include="Models\AuthenticationModel.cs" />
     <Compile Include="Models\BinaryMediaTypeFormatter.cs" />
     <Compile Include="Models\EmployeeEnrollment.cs" />
