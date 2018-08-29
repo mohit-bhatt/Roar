@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 <head>
@@ -7,12 +6,12 @@
     <script src="~/Scripts/artyom.window.min.js"></script>
     <script>
         // Create a global accesible instance of artyom
-        window.artyom = new Artyom();        
+        window.artyom = new Artyom();
         if (navigator.mediaDevices.getUserMedia) {
             var self = this;
             var constraints = { audio: true };
             chunks = [];
-            badgeNumber = null;            
+            badgeNumber = null;
             navigator.mediaDevices.getUserMedia(constraints).then(
                 function (stream) {
                     var options = {
@@ -33,8 +32,21 @@
         }
     </script>
 </head>
-<h2>Voice</h2>
-<script>   
+<div style="background-color:#cccccc;min-height:56px">
+    <h1>
+
+        <img src="~/Images/paycor-logo.png" />
+    </h1>
+</div>
+<div style="height:3px;width:100%;background-image:linear-gradient(to right,#f47321,#eaeaea)"></div>
+<h2 style="padding-bottom:40px">Welcome to Paycor Voice Command Application </h2>
+<div>
+    <label style="font-size:20px;font-weight:inherit; padding-right:20px">Please say your command </label>
+    <textarea id="commandtext" style="height:100px;width:5000px;font-style:italic">Hey Paycor i want to punch in right now</textarea>
+</div>
+<img src="~/Images/animated-sound-waves.gif" style="width:100%; padding-top:50px" /> "
+<script>
+
         artyom.addCommands({
             //The smart property of the command needs to be true
             smart: true,
@@ -45,7 +57,7 @@
                 if (mediaRecorder.state !== "recording") {
                     mediaRecorder.start();
                     console.log("Recording Starts");
-                }                
+                }
             }
         });
         artyom.addCommands({
@@ -55,7 +67,7 @@
                     mediaRecorder.stop();
                     console.log("Recording Ends");
                     alert("Badge Number:" + badgeNumber)
-                }                               
+                }
             }
         });
 
@@ -64,6 +76,8 @@
             continuous: true,//if you have https connection, you can activate continuous mode
             debug: true,//Show everything in the console
             listen: true // Start listening when this function is triggered
-    });    
+        });
+
+
 </script>
 

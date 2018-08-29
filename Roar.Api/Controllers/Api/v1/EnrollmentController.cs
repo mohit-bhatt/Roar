@@ -36,13 +36,22 @@ namespace Roar.Api.Controllers.Api
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Error while deserializing response from voice auth server");
             }
 
-            if(enrollmentResponse.Result.ToLower().Contains("Success"))
+            string enrollmentResponseCode = enrollmentResponse.ResponseCode;
+
+            if (enrollmentResponseCode == Constants.EnrollmentSuccessResponseCode)
             {
                 var userVoiceManager = new UserVoiceManager();
-                userVoiceManager.SaveUserVoiceData(new EmployeeEnrollment { ClientId = clientId, EnrollmentId = enrollmentResponse.EnrollmentID, EmployeeUid = employeeUid});
+                userVoiceManager.SaveUserVoiceData(new EmployeeEnrollment { ClientId = clientId, EnrollmentId = enrollmentResponse.EnrollmentID, EmployeeUid = employeeUid });
+                return Request.CreateResponse(HttpStatusCode.OK, enrollmentResponse);
             }
-
-            return Request.CreateResponse(HttpStatusCode.OK, enrollmentResponse);
+            else if (Constants.EnrollmentErrorResponseCodes.ContainsKey(enrollmentResponseCode))
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, Constants.EnrollmentErrorResponseCodes[enrollmentResponseCode]);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
         }
 
         [Route("Delete")]

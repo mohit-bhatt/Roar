@@ -5,7 +5,6 @@ using Roar.Api.Cloud;
 using Roar.Api.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
 namespace Roar.Api.Manager
 {
     public class UserVoiceManager: IUserVoiceManager
