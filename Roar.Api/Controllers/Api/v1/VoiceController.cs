@@ -46,13 +46,13 @@ namespace Roar.Api.Controllers.Api.v1
         /// <returns></returns>
         [Route("UserVoiceCreate")]
         [HttpPost]
-        public HttpResponseMessage SaveUserVoiceData(EnrollmentModel item)
+        public HttpResponseMessage SaveUserVoiceData(EmployeeEnrollment employeeEnrollment)
         {
             try
             {
                 UserVoiceManager manager = new UserVoiceManager();
                 string result = string.Empty;
-                result = manager.SaveUserVoiceData(item);
+                result = manager.SaveUserVoiceData(employeeEnrollment);
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
             catch (System.Exception ex)

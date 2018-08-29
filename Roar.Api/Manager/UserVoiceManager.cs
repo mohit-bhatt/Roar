@@ -15,7 +15,7 @@ namespace Roar.Api.Manager
             CloudBlobContainer container = getContainerRefernce();
             container.CreateIfNotExistsAsync();
             var fileBlob = container.GetBlockBlobReference(fileName);
-            fileBlob.UploadFromByteArrayAsync(voicedata, 0, voicedata.Length);            
+            fileBlob.UploadFromByteArray(voicedata, 0, voicedata.Length);            
             return fileBlob.Uri.ToString();
         }
 
@@ -28,12 +28,12 @@ namespace Roar.Api.Manager
             return container;
         }
 
-        public string SaveUserVoiceData(EnrollmentModel item)
+        public string SaveUserVoiceData(EmployeeEnrollment employeeEnrollment)
         {
             AzureCosmosContext azureCosmosContext = new AzureCosmosContext();
             DocumentClient client = azureCosmosContext.GetCosmosDocumentClient();
             string cosmosCollectionId = azureCosmosContext.GetCosmosCollectionId();
-            var result = client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("roardb", cosmosCollectionId), item).Result;
+            var result = client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("roardb", cosmosCollectionId), employeeEnrollment).Result;
             return result.ActivityId;
         }
     }

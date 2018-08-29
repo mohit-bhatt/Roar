@@ -11,7 +11,8 @@ using System.Web;
 
 namespace Roar.Api.Models
 {
-    public class BinaryMediaTypeFormatter : MediaTypeFormatter
+    public class BinaryMediaTypeFormatter: MediaTypeFormatter
+
     {
 
         private static Type _supportedType = typeof(byte[]);
@@ -20,7 +21,7 @@ namespace Roar.Api.Models
         public BinaryMediaTypeFormatter()
         {
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/octet-stream"));
-            SupportedMediaTypes.Add(new MediaTypeHeaderValue("audio/wav"));            
+            SupportedMediaTypes.Add(new MediaTypeHeaderValue("audio/wav"));
         }
 
         public override bool CanReadType(Type type)
@@ -50,7 +51,7 @@ namespace Roar.Api.Models
             return taskSource.Task;
         }
 
-        public override Task WriteToStreamAsync(Type type, object value,  Stream stream, 
+        public override Task WriteToStreamAsync(Type type, object value, Stream stream,
          HttpContent contentHeaders, TransportContext transportContext)
         {
             var taskSource = new TaskCompletionSource<object>();
@@ -69,4 +70,5 @@ namespace Roar.Api.Models
             return taskSource.Task;
         }
     }
+
 }
