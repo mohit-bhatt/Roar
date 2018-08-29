@@ -19,12 +19,14 @@ namespace Roar.Api.Manager
 
             try
             {
-                var connectionString = ConfigurationManager.AppSettings["TimeEntities"];
+                var connectionString = ConfigurationManager.ConnectionStrings["TimeEntities"].ConnectionString;
                 conn = new SqlConnection(connectionString);
                 DataTable laborAssociationList = new DataTable();
+                laborAssociationList.Columns.Add("JobCategoryId", typeof(Guid));
+                laborAssociationList.Columns.Add("JobCategoryItemId", typeof(Guid));
                 conn.Open();
                 SqlCommand cmd = new SqlCommand("dbo.svc_insertpunch", conn);
-                cmd.Parameters.Add(new SqlParameter("@Punch", punch));
+                //cmd.Parameters.Add(new SqlParameter("@Punch", punch));
                 cmd.Parameters.Add(new SqlParameter("@clientId", punch.ClientId));
                 cmd.Parameters.Add(new SqlParameter("@employeeUid", punch.EmployeeUid));
                 cmd.Parameters.Add(new SqlParameter("@punchDateTime", (punch.PunchDateTime.Trim(TimeSpan.TicksPerMinute))));

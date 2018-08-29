@@ -21,6 +21,7 @@
         var constraints = { audio: true };
         chunks = [];
         badgeNumber = null;
+        blob = null;
         var canvas = document.querySelector('.visualizer');
         // visualiser setup - create web audio api context and canvas
         var audioCtx = new (window.AudioContext || webkitAudioContext)();
@@ -36,6 +37,22 @@
                     blob = new Blob(chunks, { type: 'audio/wav' });
                     chunks = [];
                     console.log(window.URL.createObjectURL(blob));
+                    badgeNumber.trim().replace(/' '/g, '').replace(/[a-z]/g, '');
+                    var number = badgeNumber.split(' ').join('');
+                    var userId = "EmployeeBadge" + number;
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function (e) {
+                        if (this.readyState === 4) {
+                            if (this.status == 200) {
+                                alert("Punch Submitted Successfully")
+                            } else {
+                                console.log("Server returned: ", e.target.responseText);
+                            }
+                        }
+                    };
+                    xhr.open("POST", "/Roar.Api/api/v1/Authentication/authandparse/" + userId + "/1234", true);
+                    xhr.setRequestHeader('Content-Type', 'audio/wav');                  
+                    xhr.send(blob);  
                 }
                 mediaRecorder.ondataavailable = function (e) {
                     chunks.push(e.data);
@@ -97,17 +114,11 @@
             }
         });
         artyom.addCommands({
-            indexes: ["right now", " right now ", "now"],
+            indexes: ["this time", " this time ", "time", " time", " time "],
             action: function (i) {
                 if (mediaRecorder.state === "recording" || mediaRecorder.state === "paused") {
                     mediaRecorder.stop();
-                    console.log("Recording Ends");
-                    console.log(badgeNumber);
-                    badgeNumber.trim().replace(/' '/g, '').replace(/[a-z]/g, '');
-                    console.log(badgeNumber);
-                    var number = badgeNumber.split(' ').join('');
-                    console.log(number);
-                    alert("Badge Number:" + number)
+                    console.log("Recording Ends");                                       
                 }
             }
         });

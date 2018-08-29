@@ -10,7 +10,7 @@ using Roar.Api.Manager;
 
 namespace Roar.Api.Controllers.Api
 {
-    [Route("api/v1/Authentication")]
+    [RoutePrefix("api/v1/Authentication")]
     public class AuthenticationController : ApiController
     {
         [HttpPost]
@@ -50,7 +50,7 @@ namespace Roar.Api.Controllers.Api
             if (authResponse.Result.Contains("Authentication successful"))
             {
                 var command = authResponse.DetectedVoiceprintText;
-                if(command.ToLower().Contains("punch in"))
+                if(command.ToLower().Contains("punch"))
                 {
                     DoPunchIn(authResponse.EnrollmentID);
                     result = true;
@@ -90,6 +90,7 @@ namespace Roar.Api.Controllers.Api
                     PunchSourceTypeId = (byte)1, //manual
                     PunchActivityTypeId = (byte)1, //work
                     PunchStatusTypeId = (byte)1, //auto
+                    LaborAssociations = new System.Collections.Generic.List<LaborPunchAssociation>(),
                     IsActive = true,
                     CanBeProcessed = true,
                     UserKey = Guid.Parse("C00E2729-9FFA-E511-8893-005056BD7869")
