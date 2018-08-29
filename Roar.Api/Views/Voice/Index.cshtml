@@ -10,31 +10,41 @@
         window.artyom = new Artyom();
     </script>
 </head>
-<h2>Voice</h2>
-<script>    
-        artyom.addCommands({
-            indexes: ["Punch in", "Punch out"],
-            action: function (i) {
-                // i = index of the recognized option
-                switch (i) {
-                    case 0:
-                        alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you IN");
-                        break;
-                    case 1:
-                        alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you OUT");
-                        break;
-                }
-                
-            }
-        });
+<div style="background-color:#cccccc;min-height:56px">
+    <h1>
 
-        artyom.initialize({
-            lang: "en-GB",// More languages are documented in the library
-            continuous: true,//if you have https connection, you can activate continuous mode
-            debug: true,//Show everything in the console
-            listen: true // Start listening when this function is triggered
-        });
-   
-    
+        <img src="~/Images/paycor-logo.png" />
+    </h1>
+</div>
+<div style="height:3px;width:100%;background-image:linear-gradient(to right,#f47321,#eaeaea)"></div>
+<h2 style="padding-bottom:40px">Welcome to Paycor Voice Command Application </h2>
+<div>
+    <label style="font-size:20px;font-weight:inherit; padding-right:20px">Please say your command </label>
+    <textarea id="commandtext" style="height:100px;width:5000px;font-style:italic">Hey Paycor i want to punch in right now</textarea>
+</div>
+<img src="~/Images/animated-sound-waves.gif" style="width:100%; padding-top:50px" /> "
+<script>
+    artyom.addCommands({
+        indexes: ["Punch in", "Punch out"],
+        action: function (i) {            // i = index of the recognized option
+            switch (i) {
+                case 0:
+                    alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you IN");
+                    break;
+                case 1:
+                    alert("At this time I suppose to call an api with your voice to authenticate you and PUNCH you OUT");
+                    break;
+            }
+
+        }
+    });
+
+    artyom.initialize({
+        lang: "en-GB",// More languages are documented in the library
+        continuous: true,//if you have https connection, you can activate continuous mode
+        debug: true,//Show everything in the console
+        listen: true // Start listening when this function is triggered
+    });
+
 </script>
 
