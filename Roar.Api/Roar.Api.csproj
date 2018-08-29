@@ -229,6 +229,7 @@
     <Compile Include="Models\EnrollmentModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\Constants.cs" />
     <Compile Include="Utility\VoiceItWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
