@@ -3,16 +3,14 @@
 }
 <head>
     <!-- Important to load artyom in the head tag, this give time to load all the voices in the browser -->
-    <script src="~/Scripts/artyom.window.min.js"></script>    
+    <script src="~/Scripts/artyom.window.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 </head>
-<div style="background-color:#cccccc;min-height:56px">
-    <h1>
-        <img src="~/Images/paycor-logo.png" />
-    </h1>
-</div>
-<div style="height:3px;width:100%;background-image:linear-gradient(to right,#f47321,#eaeaea)"></div>
-<h2 style="padding-bottom:40px">Welcome to Paycor Voice Command Application </h2>
-<canvas class="visualizer" height="60px" width="746"></canvas>
+ <h1><img src="~/Images/paycor-logo.png" /></h1>
+
+ <div style="margin-left: 250px;font-size: xx-large;color: #f47321;">What would you like to do?</div>
+ <div style="margin-left: 300px;font-size: medium;">Use your Voice ID to say your command.</div>
+<canvas class="visualizer" width="700" height="500"></canvas>
 <script>
     // Create a global accesible instance of artyom
     window.artyom = new Artyom();
@@ -22,18 +20,12 @@
         chunks = [];
         badgeNumber = null;
         blob = null;
-        var canvas = document.querySelector('.visualizer');
-        // visualiser setup - create web audio api context and canvas
-        var audioCtx = new (window.AudioContext || webkitAudioContext)();
-        var canvasCtx = canvas.getContext("2d");
-
         navigator.mediaDevices.getUserMedia(constraints).then(
             function (stream) {
-                var options = {
-                    mimeType: 'audio/webm'
-                }
+                var options = { mimeType: 'audio/webm' }
                 mediaRecorder = new MediaRecorder(stream, options);
                 mediaRecorder.onstop = function (e) {
+                    canvasDraw("Processing...",'green');
                     blob = new Blob(chunks, { type: 'audio/wav' });
                     chunks = [];
                     console.log(window.URL.createObjectURL(blob));
@@ -44,59 +36,67 @@
                     xhr.onload = function (e) {
                         if (this.readyState === 4) {
                             if (this.status == 200) {
-                                alert("Punch Submitted Successfully")
+                                canvasDraw("Punch Submitted!", 'green');
+                                setTimeout(canvasDraw("Listening...", '#6dd5ed'), 3000);
                             } else {
                                 console.log("Server returned: ", e.target.responseText);
                             }
                         }
-                    };
+                    };                    
                     xhr.open("POST", "/Roar.Api/api/v1/Authentication/authandparse/" + userId + "/1234", true);
                     xhr.setRequestHeader('Content-Type', 'audio/wav');                  
                     xhr.send(blob);  
                 }
                 mediaRecorder.ondataavailable = function (e) {
                     chunks.push(e.data);
-                }
-                visualize(stream)
-                function visualize(stream) {
-                    var source = audioCtx.createMediaStreamSource(stream);
-                    var analyser = audioCtx.createAnalyser();
-                    analyser.fftSize = 2048;
-                    var bufferLength = analyser.frequencyBinCount;
-                    var dataArray = new Uint8Array(bufferLength);
-                    source.connect(analyser);
-                    //analyser.connect(audioCtx.destination);
-                    draw()
-
-                    function draw() {
-                        WIDTH = canvas.width
-                        HEIGHT = canvas.height;
-                        requestAnimationFrame(draw);
-                        analyser.getByteTimeDomainData(dataArray);
-                        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-                        canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-                        canvasCtx.lineWidth = 2;
-                        canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-                        canvasCtx.beginPath();
-                        var sliceWidth = WIDTH * 1.0 / bufferLength;
-                        var x = 0;
-                        for (var i = 0; i < bufferLength; i++) {
-                            var v = dataArray[i] / 128.0;
-                            var y = v * HEIGHT / 2;
-                            if (i === 0) {
-                                canvasCtx.moveTo(x, y);
-                            } else {
-                                canvasCtx.lineTo(x, y);
-                            }
-                            x += sliceWidth;
-                        }
-                        canvasCtx.lineTo(canvas.width, canvas.height / 2);
-                        canvasCtx.stroke();
-                    }
-                }                
+                }   
+                canvasDraw("Listening...", '#6dd5ed');
             }, function (err) {
                 console.log('The following error occured: ' + err);
             });
+    }
+
+    function clearCanvas() {
+        var canvas = document.querySelector('.visualizer'),
+            canvasCtx = canvas.getContext("2d");
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function canvasDraw(text,color) {
+        var canvas = document.querySelector('.visualizer'),
+            canvasCtx = canvas.getContext("2d");  
+            //clear before draw
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        var x = 450,
+            y = 210,
+            // Radii of the white glow.
+            innerRadius = 195,
+            outerRadius = 205,
+            // Radius of the entire circle.
+            radius = 200;
+
+        var gradient = canvasCtx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
+        gradient.addColorStop(0, '#ffff');
+        gradient.addColorStop(1, color);
+        canvasCtx.arc(x, y, radius, 0, 2 * Math.PI);
+        canvasCtx.fillStyle = gradient;
+        canvasCtx.fill();
+
+        canvasCtx.beginPath();
+        canvasCtx.fillStyle = "black";
+        canvasCtx.font = "30px Arial";
+        canvasCtx.fillText(text, 370, 220);
+        canvasCtx.fill();
+
+        //if (text === "Punch Submitted!") {
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(425, 150);
+            canvasCtx.lineTo(450, 175);
+            canvasCtx.lineTo(500, 125);
+            canvasCtx.lineWidth = 10;
+            canvasCtx.strokeStyle = color;
+            canvasCtx.stroke(); 
+        //}        
     }
 </script>
 <script>
@@ -129,7 +129,5 @@
             debug: true,//Show everything in the console
             listen: true // Start listening when this function is triggered
         });
-
-
 </script>
 
